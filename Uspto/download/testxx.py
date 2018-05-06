@@ -6,40 +6,16 @@ import requests
 
 import random
 
+from download.mongodb_help import MogodbHelp
 
-url = 'http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=1&f=G&l=50&d=PTXT&S1=20130101.PD.&OS=ISD/1/1/2013&RS=ISD/20130101'
-user_agent_list = [
-            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",
-            "Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11",
-            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6",
-            "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6",
-            "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1",
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5",
-            "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5",
-            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3",
-            "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3",
-            "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3",
-            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3",
-            "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
-            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
-            "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
-            "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3",
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
-            "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"
-        ]
-UA = random.choice(user_agent_list)
-proxies = { "http": "http://113.118.97.119:9797", }
-randomIP = str(random.randint(0, 255)) + '.' + str(random.randint(0, 255)) + '.' + str(
-        random.randint(0, 255)) + '.' + str(random.randint(0, 255))
-headers = {
-        'User-Agent': UA,
-        "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6",
-        'X-Forwarded-For': randomIP,
-    }
-html = requests.get(url,headers = headers)
-soup = BeautifulSoup(html.text,'lxml')
-test = BeautifulSoup(html.text,'lxml').find_all('table')[2]
+from download.download import request
+
+
+def save_allmessage():
+
+ re = request(url,3)
+ soup = BeautifulSoup(html.text,'lxml')
+ test = BeautifulSoup(html.text,'lxml').find_all('table')[2]
 
 UnitedStatesPatent = test.find_all('b')[1].get_text()
 Sugaya = test.find_all('b')[3].get_text()
@@ -105,5 +81,34 @@ yyyyy = soup.find_all('td',  align = "right" ,valign = "top" ,width = "70%")
 #print(yyyyy)
 for i in range(len(yyyyy)) :
 
-   t = yyyyy[i]
-   print(t.string)
+   t = yyyyy[i].text
+   #y = t.string
+   #y = ' '.join(y.split())
+   #print(t)
+
+table8 = soup.find_all('table')[8]
+#print(table8)
+
+tr10 = table8.find_all('tr')[1:]
+#print(tr10)
+for td in tr10 :
+
+    #print(td.find_all('td'))
+
+    for text12 in td.find_all('td') :
+
+        if text12.string != None :
+            print(text12.string)
+
+
+
+
+        if text12.find('a') :
+
+            aurl = text12.find('a')
+
+            aurli = aurl['href']
+            aurlstr = text12.find('a').get_text()
+
+            print(aurli)
+
